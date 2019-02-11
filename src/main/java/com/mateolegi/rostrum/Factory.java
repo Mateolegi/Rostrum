@@ -14,6 +14,7 @@ import javax.persistence.Persistence;
 public class Factory {
 
     private static final EntityManagerFactory FACTORY;
+    private static EntityManager manager = null;
 
     static {
         FACTORY = Persistence.createEntityManagerFactory(Properties
@@ -24,8 +25,11 @@ public class Factory {
      * Generates EntityManager to interact with the persistence context.
      * @return generated EntityManager
      */
-    public static EntityManager getEntityManager() {
-        return FACTORY.createEntityManager();
+    public static synchronized EntityManager getEntityManager() {
+        if (manager == null || !manager.isOpen()) {
+            manager = FACTORY.createEntityManager();
+        }
+        return manager;
     }
 
     /**

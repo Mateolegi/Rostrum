@@ -11,26 +11,27 @@ class RostrumTest {
 
     @Test
     void findAll() {
-        List<User> userList = new User().findAll();
-        assertFalse(userList.isEmpty());
+        List<User> userList = Rostrum.findAll(User.class);
+        assertNotNull(userList);
     }
 
     @Test
     void find() {
-
+        User u = Rostrum.find(User.class, 1L);
+        assertNotNull(u);
     }
 
     @Test
     void save() {
         User u = new User();
-        u.setUsername("Mateolegi2");
+        u.setUsername("Test");
         u.setPassword("password");
-        u.setName("Mateo");
-        u.setLastName("Leal");
+        u.setName("Prueba");
+        u.setLastName("Prueba");
         u.setActive(true);
-        User uSaved = u.save();
-        System.out.println(uSaved.getId());
-        System.out.println(uSaved.getPassword());
+        Factory.getEntityManager().persist(u);
+        //User uSaved = Rostrum.save(u);
+        //System.out.println(uSaved.getId());
     }
 
     @Test

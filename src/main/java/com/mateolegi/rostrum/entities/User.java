@@ -11,20 +11,34 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users", schema = "social_network", catalog = "")
-public class User extends Rostrum<User> {
+public class User {
+    @Id
+    @Column(name = "id")
     private Long id;
+    @Basic
+    @Column(name = "username")
     private String username;
+    @Basic
+    @Column(name = "password")
     @Crypt(type = Type.ONE_WAY)
     private String password;
+    @Basic
+    @Column(name = "name")
     private String name;
+    @Basic
+    @Column(name = "last_name")
     private String lastName;
+    @Basic
+    @Column(name = "active")
     private Boolean active;
+    @Basic
+    @Column(name = "created_at")
     private Timestamp createdAt;
+    @Basic
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
     private Collection<Post> postsById;
 
-    @Id
-    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -33,8 +47,6 @@ public class User extends Rostrum<User> {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "username")
     public String getUsername() {
         return username;
     }
@@ -43,8 +55,6 @@ public class User extends Rostrum<User> {
         this.username = username;
     }
 
-    @Basic
-    @Column(name = "password")
     public String getPassword() {
         return password;
     }
@@ -53,8 +63,6 @@ public class User extends Rostrum<User> {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -63,8 +71,6 @@ public class User extends Rostrum<User> {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -73,8 +79,6 @@ public class User extends Rostrum<User> {
         this.lastName = lastName;
     }
 
-    @Basic
-    @Column(name = "active")
     public Boolean getActive() {
         return active;
     }
@@ -83,8 +87,6 @@ public class User extends Rostrum<User> {
         this.active = active;
     }
 
-    @Basic
-    @Column(name = "created_at")
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -93,8 +95,6 @@ public class User extends Rostrum<User> {
         this.createdAt = createdAt;
     }
 
-    @Basic
-    @Column(name = "updated_at")
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
