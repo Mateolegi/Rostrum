@@ -1,8 +1,9 @@
 package com.mateolegi.rostrum.entities;
 
-import com.mateolegi.rostrum.Rostrum;
+import com.mateolegi.rostrum.RostrumEntity;
 import com.mateolegi.rostrum.annotation.Crypt;
 import com.mateolegi.rostrum.annotation.Type;
+import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,8 +12,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users", schema = "social_network", catalog = "")
-public class User {
+public class User extends RostrumEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Basic
@@ -30,7 +32,7 @@ public class User {
     private String lastName;
     @Basic
     @Column(name = "active")
-    private Boolean active;
+    private Integer active;
     @Basic
     @Column(name = "created_at")
     private Timestamp createdAt;
@@ -79,11 +81,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Boolean getActive() {
+    public Integer getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(Integer active) {
         this.active = active;
     }
 
@@ -104,6 +106,7 @@ public class User {
     }
 
     @Override
+    @Contract(value = "null -> false", pure = true)
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

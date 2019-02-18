@@ -21,7 +21,7 @@ public class Main {
         u.setPassword("test");
         u.setName("Mateo");
         u.setLastName("Leal");
-        u.setActive(true);
+        u.setActive(1);
     }
 
     public static void main(String[] args) {
