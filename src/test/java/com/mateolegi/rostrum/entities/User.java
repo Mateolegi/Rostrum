@@ -1,6 +1,5 @@
 package com.mateolegi.rostrum.entities;
 
-import com.mateolegi.rostrum.RostrumEntity;
 import com.mateolegi.rostrum.annotation.Crypt;
 import com.mateolegi.rostrum.annotation.Type;
 import org.jetbrains.annotations.Contract;

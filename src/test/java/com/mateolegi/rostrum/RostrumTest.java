@@ -17,7 +17,7 @@ class RostrumTest {
 
     @Test
     void find() {
-        User u = User.find(2L);
+        User u = Rostrum.find(User.class, 2L);
         System.out.println(u.getPassword());
         System.out.println(BCrypt.verifyHash("password", u.getPassword()));
         assertNotNull(u);
