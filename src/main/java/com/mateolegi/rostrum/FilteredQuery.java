@@ -1,5 +1,8 @@
 package com.mateolegi.rostrum;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +17,7 @@ import java.util.Objects;
  */
 public class FilteredQuery {
 
+    @Contract(" -> fail")
     private FilteredQuery() {
         throw new AssertionError("There are no instances for you!");
     }
@@ -30,8 +34,10 @@ public class FilteredQuery {
      * @param clazz class of the consulted entity
      * @param queryParams parameter to make the filter
      * @return query with applied filters
+     * @throws IllegalArgumentException if EntityManager is null
      */
-    public static <E> TypedQuery<E> createFilteredQuery(Class<E> clazz, EntityManager entityManager,
+    public static <E> TypedQuery<E> createFilteredQuery(Class<E> clazz,
+                                                    @NotNull("EntityManager can't be null") EntityManager entityManager,
                                                         Map<String, Object> queryParams) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<E> query = builder.createQuery(clazz);
@@ -40,6 +46,7 @@ public class FilteredQuery {
         return entityManager.createQuery(query);
     }
 
+    /*
     /**
      * Convert a {@code MultivaluedMap} of JAX-RS into a {@code Map}.
      * In the case that there are duplicate values, only the first will be taken. <br>
@@ -57,8 +64,11 @@ public class FilteredQuery {
      * @param builder object used to build the query
      * @param queryParams parameters for the filter
      * @return fix with filters
+     * @throws IllegalArgumentException if queryParams is null
      */
-    private static <E> Predicate[] filter(Root<E> from, CriteriaBuilder builder, Map<String, Object> queryParams) {
+    @NotNull
+    private static <E> Predicate[] filter(Root<E> from, CriteriaBuilder builder,
+                                          @NotNull("Query params can't be null") Map<String, Object> queryParams) {
         return queryParams.entrySet().parallelStream()
                 .map(entry -> {
                     try {

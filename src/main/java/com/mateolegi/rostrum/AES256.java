@@ -3,6 +3,8 @@ package com.mateolegi.rostrum;
 import com.mateolegi.rostrum.constant.PropertiesConstants;
 import com.mateolegi.rostrum.exception.DecryptionException;
 import com.mateolegi.rostrum.exception.EncryptionException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -51,6 +53,8 @@ public class AES256 {
      * @param encryptedText text encrypted previously
      * @return original text
      */
+    @NotNull
+    @Contract("_ -> new")
     public static String decrypt(String encryptedText) {
         try {
             AlgorithmParameterSpec ivspec = getAlgorithmParameterSpec();
@@ -63,11 +67,14 @@ public class AES256 {
         }
     }
 
+    @NotNull
+    @Contract(" -> new")
     private static AlgorithmParameterSpec getAlgorithmParameterSpec() {
         byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         return new IvParameterSpec(iv);
     }
 
+    @NotNull
     private static Key getKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(privateKey.toCharArray(), salt.getBytes(), 65536, 256);

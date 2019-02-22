@@ -1,6 +1,7 @@
 package com.mateolegi.rostrum;
 
 import com.mateolegi.rostrum.constant.PropertiesConstants;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * BCrypt implements OpenBSD-style Blowfish password hashing using
@@ -14,10 +15,11 @@ public class BCrypt {
     private static final int logRounds = Properties.getInt(PropertiesConstants.BCRYPT_ITERATIONS);
 
     /**
-     * Hash a password using the OpenBSD bcrypt scheme
+     * Hash a string using the OpenBSD bcrypt scheme
      * @param original the text to hash
-     * @return
+     * @return hashed text
      */
+    @NotNull
     public static String hash(String original) {
         return org.mindrot.jbcrypt.BCrypt.hashpw(original, org.mindrot.jbcrypt.BCrypt.gensalt(logRounds));
     }

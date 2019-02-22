@@ -5,6 +5,9 @@ import com.mateolegi.rostrum.number_cast.*;
 import org.eclipse.persistence.config.QueryHints;
 import org.eclipse.persistence.config.ResultType;
 import org.eclipse.persistence.internal.helper.DatabaseField;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.lang.reflect.Constructor;
@@ -35,6 +38,7 @@ public class EntityFactory {
         numberCast.put(Float.class, new FloatCast());
     }
 
+    @Contract(" -> fail")
     private EntityFactory() {
         throw new AssertionError("¡No hay instancias para ti!");
     }
@@ -84,6 +88,7 @@ public class EntityFactory {
      * @return instancia de la clase
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
+     * @throws IllegalArgumentException if query is null
      * @throws NoResultException si no hay resultado
      * @throws NonUniqueResultException si hay más de un resultado
      * @throws IllegalStateException si se llama para una instrucción UPDATE o
@@ -102,7 +107,7 @@ public class EntityFactory {
      * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
      */
     @SuppressWarnings("unchecked")
-    public static <T> T reflect(final Query query, final Class<T> clazz) {
+    public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz) {
         query.setHint(QueryHints.RESULT_TYPE, ResultType.Map);
         Map<DatabaseField, ?> map = (Map<DatabaseField, ?>) query.getSingleResult();
         return mapToDTO(map, clazz);
@@ -120,6 +125,7 @@ public class EntityFactory {
      * @return instancia de la clase
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.1.0
+     * @throws IllegalArgumentException if query is null
      * @throws NonUniqueResultException si hay más de un resultado
      * @throws IllegalStateException si se llama para una instrucción UPDATE o
      * 		   DELETE del lenguaje de consulta de persistencia de Java
@@ -137,7 +143,8 @@ public class EntityFactory {
      * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
      */
     @SuppressWarnings("unchecked")
-    public static <T> T reflect(final Query query, final Class<T> clazz, Function<NoResultException, T> noResultExceptionCallback) {
+    public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz,
+                                Function<NoResultException, T> noResultExceptionCallback) {
         try {
             query.setHint(QueryHints.RESULT_TYPE, ResultType.Map);
             Map<DatabaseField, ?> map = (Map<DatabaseField, ?>) query.getSingleResult();
@@ -161,6 +168,7 @@ public class EntityFactory {
      * @return instancia de la clase
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.1.0
+     * @throws IllegalArgumentException if query is null
      * @throws IllegalStateException si se llama para una instrucción UPDATE o
      * 		   DELETE del lenguaje de consulta de persistencia de Java
      * @throws QueryTimeoutException si la ejecución de la consulta supera el
@@ -177,7 +185,8 @@ public class EntityFactory {
      * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
      */
     @SuppressWarnings("unchecked")
-    public static <T> T reflect(final Query query, final Class<T> clazz, Function<NoResultException, T> noResultExceptionCallback,
+    public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz,
+                                Function<NoResultException, T> noResultExceptionCallback,
                                 Function<NonUniqueResultException, T> nonUniqueResultExceptionCallback) {
         try {
             query.setHint(QueryHints.RESULT_TYPE, ResultType.Map);
@@ -198,6 +207,7 @@ public class EntityFactory {
      * @return instancia de la clase
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
+     * @throws IllegalArgumentException if query is null
      * @throws IllegalStateException si se llama para una instrucción UPDATE o
      * 		   DELETE del lenguaje de consulta de persistencia de Java
      * @throws QueryTimeoutException si la ejecución de la consulta supera el
@@ -213,7 +223,7 @@ public class EntityFactory {
      * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> reflectList(final Query query, final Class<T> clazz) {
+    public static <T> List<T> reflectList(@NotNull("Query can't be null") final Query query, final Class<T> clazz) {
         List<T> response = new ArrayList<>();
         query.setHint(QueryHints.RESULT_TYPE, ResultType.Map);
         List<Map<DatabaseField, ?>> res = query.getResultList();
@@ -228,10 +238,13 @@ public class EntityFactory {
      * @param map mapa con el resultado de la consulta
      * @param clazz clase a la que se va a mapear
      * @return instancia con los valores del mapa
+     * @throws IllegalArgumentException if map or class is null
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
-    private static <T> T mapToDTO(Map<DatabaseField, ?> map, final Class<T> clazz) {
+    @Nullable
+    private static <T> T mapToDTO(@NotNull("Map can't be null") Map<DatabaseField, ?> map,
+                                  @NotNull("Class can't be null") final Class<T> clazz) {
         try {
             T instance = clazz.newInstance();
             List<Field> fields = Arrays.asList(clazz.getDeclaredFields());
@@ -254,10 +267,11 @@ public class EntityFactory {
      * @param field
      * @param o
      * @param instance
+     * @throws IllegalArgumentException if field is null
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
-    private static <T> void setValue(Field field, Object o, T instance) {
+    private static <T> void setValue(@NotNull("Field can't be null") Field field, Object o, T instance) {
         try {
             boolean isAccessible = field.isAccessible();
             field.setAccessible(true);
@@ -275,10 +289,11 @@ public class EntityFactory {
      * @param databaseField nombre de la columna
      * @param fields lista con los campos de la clase
      * @return el campo de la clase que coincide, de lo contrario {@code null}
+     * @throws IllegalArgumentException if field lists is null
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
-    private static Field obtenerCampo(String databaseField, List<Field> fields) {
+    private static Field obtenerCampo(String databaseField, @NotNull("Field list can't be null") List<Field> fields) {
         return fields.stream().filter(field -> field.getName().equalsIgnoreCase(calcularNombreCampo(databaseField)))
                 .findFirst()
                 .orElse(null);
@@ -290,9 +305,10 @@ public class EntityFactory {
      * Creado el 13/12/2018 a las  9:07:44 a. m. <br>
      * @param queryName nombre de la columna de la consulta
      * @return nombre nombre de la columna transformado
+     * @throws IllegalArgumentException if queryName is null
      * @since 2.0.0
      */
-    private static String calcularNombreCampo(final String queryName) {
+    private static String calcularNombreCampo(@NotNull("QueryName is null") final String queryName) {
         if (queryName.contains("_")) {
             return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, queryName);
         }
@@ -350,11 +366,13 @@ public class EntityFactory {
      * Creado el 1/12/2018 a las  12:11:35 p. m. <br>
      * @param clazz clase del POJO
      * @param parameterCount número de atributos del objeto de la consulta nativa
-     * @return
+     * @return the constructor
+     * @throws IllegalArgumentException if class is null
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      */
     @SuppressWarnings("unchecked")
-    private static <T> Constructor<T> getConstructor(Class<T> clazz, int parameterCount) {
+    private static <T> Constructor<T> getConstructor(@NotNull("Class can't be null") Class<T> clazz,
+                                                     int parameterCount) {
         Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
         return Arrays.asList(constructors).stream()
                 .filter(i -> i.getParameterCount() == parameterCount)
@@ -368,9 +386,10 @@ public class EntityFactory {
      * @param p arreglo con los atributos del objeto de la consulta nativa
      * @param classes arreglo con las clases respectivas para cada atributo
      * @return arreglo de objetos con los atributos moldeados
+     * @throws IllegalArgumentException if attributes array is null
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      */
-    private static Object[] castParams(Object[] p, Class<?>[] classes) {
+    private static Object[] castParams(@NotNull("Attributes array can't be null") Object[] p, Class<?>[] classes) {
         Object[] castedParams = new Object[p.length];
         for (int i = 0; i < p.length; i++) {
             castedParams[i] = castParam(p[i], classes[i]);
@@ -387,6 +406,7 @@ public class EntityFactory {
      * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
+    @Nullable
     private static Object castParam(Object o, Class<?> c) {
         try {
             if (o == null) {

@@ -41,6 +41,7 @@ class Properties {
         return Integer.parseInt(getProperty(name));
     }
 
+    @NotNull
     private static String getProperty(String name) {
         try {
             if (isJUnitTest()) {
