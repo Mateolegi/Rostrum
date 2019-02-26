@@ -9,5 +9,8 @@
         <module name="Rostrum" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Rostrum" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
