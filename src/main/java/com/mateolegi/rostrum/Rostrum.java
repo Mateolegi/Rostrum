@@ -29,6 +29,8 @@ public class Rostrum {
 
     /**
      * Gets all records of the entity in the persistence context.
+     * @param <T> entity type
+     * @param clazz entity class
      * @return all records
      * @throws IllegalArgumentException if the query string is found to be invalid or if the query result is found to
      *         not be assignable to the specified type.

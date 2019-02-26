@@ -20,9 +20,8 @@ import java.util.logging.Logger;
 
 
 /**
- * Esta clase tiene el objetivo de transformar los objetos genéricos retornados por
- * las consultas nativas de JPA en un POJO con los atributos requeridos <br>
- * Creado el 1/12/2018 a las  12:05:12 p. m. <br>
+ * It fulfills the function of transforming the generic objects returned by the native JPA queries in a POJO with the
+ * required attributes.
  * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
  * @version 2.1.0
  */
@@ -40,32 +39,28 @@ public class EntityFactory {
 
     @Contract(" -> fail")
     private EntityFactory() {
-        throw new AssertionError("¡No hay instancias para ti!");
+        throw new AssertionError("There are no instances for you!");
     }
 
     /**
-     * Transforma un objecto retornado por una consulta nativa de JPA en un POJO.<br>
-     * El POJO debe tener un constructor con los parametros y el orden de la consulta.<br>
-     * Creado el 1/12/2018 a las  11:58:00 a. m. <br>
-     * @param <T> Clase del POJO que se va a retornar
-     * @param o objeto retornado por la consulta nativa
-     * @param clazz clase del POJO
-     * @return POJO con la información del objeto
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Transforms a returned object through a native JPA query in a POJO. The POJO must have a constructor with the
+     * parameters and the order of the query.
+     * @param <T> POJO class to be returned
+     * @param o object returned by the native query
+     * @param clazz POJO class
+     * @return POJO with the information of the object
      */
     public static <T> T reflect(final Object o, final Class<T> clazz) {
         return objectToDTO(o, clazz);
     }
 
     /**
-     * Transforma un objecto retornado por una consulta nativa de JPA en un POJO.<br>
-     * El POJO debe tener un constructor con los parametros y el orden de la consulta.<br>
-     * Creado el 1/12/2018 a las  11:58:00 a. m. <br>
-     * @param <T> Clase del POJO que se va a retornar
-     * @param o objeto retornado por la consulta nativa
-     * @param clazz clase del POJO
-     * @return POJO con la información del objeto
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Transforms a returned object by a native JPA query into a POJO. The POJO must have a constructor with the
+     * parameters and the order of the query.
+     * @param <T> POJO class to be returned
+     * @param o object returned by the native query
+     * @param clazz POJO class
+     * @return POJO with the information of the object
      */
     public static <T> List<T> reflectList(final Object o, final Class<T> clazz) {
         List<T> results = new ArrayList<>();
@@ -79,32 +74,26 @@ public class EntityFactory {
     }
 
     /**
-     * Ejecuta una consulta y mapea el resultado en un DTO.
-     * Retorna un único resultado, en caso que la consulta devuelva más
-     * de un registro o ningún registro se lanzan las excepciones de {@code Query} <br>
-     * Creado el 12/12/2018 a las  3:27:38 p. m. <br>
-     * @param query después de asignarle los parámetros
-     * @param clazz clase a la que se quiere transformar el resultado de la consulta
-     * @return instancia de la clase
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Execute a query and map the result to a DTO. Return a single result, if the query returns more than one record
+     * or no record, the exceptions of {@code Query} are thrown.
+     * @param <T> entity type
+     * @param query query after assigning parameters
+     * @param clazz class to which you want to transform the result of the query
+     * @return instance
      * @since 2.0.0
      * @throws IllegalArgumentException if query is null
-     * @throws NoResultException si no hay resultado
-     * @throws NonUniqueResultException si hay más de un resultado
-     * @throws IllegalStateException si se llama para una instrucción UPDATE o
-     * 		   DELETE del lenguaje de consulta de persistencia de Java
-     * @throws QueryTimeoutException si la ejecución de la consulta supera el
-     * 		   valor del tiempo de espera de la consulta y solo se revierte la
-     * 		   instrucción
-     * @throws TransactionRequiredException si se ha establecido un modo de
-     * 		   bloqueo distinto de {@code NONE} y no hay transacción o el
-     * 		   contexto de persistencia no se ha unido a la transacción
-     * @throws PessimisticLockException si el bloqueo pesimista falla y
-     * 		   la transacción se revierte
-     * @throws LockTimeoutException si el bloqueo pesimista falla y solo
-     * 		   se revertirá la instrucción
-     * @throws PersistenceException si la ejecución de la consulta supera el
-     * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
+     * @throws NoResultException if there is no result
+     * @throws NonUniqueResultException if there is more than one result
+     * @throws IllegalStateException if it is called for an UPDATE or DELETE statement from the Java persistence query
+     *         language
+     * @throws QueryTimeoutException if the execution of the query exceeds the value of the query timeout and only the
+     *         instruction is reversed
+     * @throws TransactionRequiredException if a blocking mode other than {@code NONE} has been set and there is no
+     *         transaction or the persistence context has not joined the transaction
+     * @throws PessimisticLockException if the pessimistic blockade fails and the transaction is reversed
+     * @throws LockTimeoutException if the pessimistic blockade fails and only the instruction will be reversed
+     * @throws PersistenceException if the execution of the query exceeds the timeout value of the query and the
+     *         transaction rolls back
      */
     @SuppressWarnings("unchecked")
     public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz) {
@@ -114,33 +103,26 @@ public class EntityFactory {
     }
 
     /**
-     * Ejecuta una consulta y mapea el resultado en un DTO.
-     * Retorna un único resultado, en caso que la consulta devuelva más
-     * de un registro o ningún registro se lanzan las excepciones de {@code Query} <br>
-     * Creado el 24/01/2019 a las  11:42:00 a. m. <br>
-     * @param query después de asignarle los parámetros
-     * @param clazz clase a la que se quiere transformar el resultado de la consulta
-     * @param noResultExceptionCallback función que se va a ejecutar en el caso
-     * 		  que query no arroje resultados
-     * @return instancia de la clase
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Execute a query and map the result to a DTO. Returns a single result, if the query returns more than one record
+     * or no record, the exceptions of {@code Query} are thrown.
+     * @param <T> entity type
+     * @param query query after assigning parameters
+     * @param clazz class to which you want to transform the result of the query
+     * @param noResultExceptionCallback function that will be executed in the case that query does not get results
+     * @return instance
      * @since 2.1.0
      * @throws IllegalArgumentException if query is null
-     * @throws NonUniqueResultException si hay más de un resultado
-     * @throws IllegalStateException si se llama para una instrucción UPDATE o
-     * 		   DELETE del lenguaje de consulta de persistencia de Java
-     * @throws QueryTimeoutException si la ejecución de la consulta supera el
-     * 		   valor del tiempo de espera de la consulta y solo se revierte la
-     * 		   instrucción
-     * @throws TransactionRequiredException si se ha establecido un modo de
-     * 		   bloqueo distinto de {@code NONE} y no hay transacción o el
-     * 		   contexto de persistencia no se ha unido a la transacción
-     * @throws PessimisticLockException si el bloqueo pesimista falla y
-     * 		   la transacción se revierte
-     * @throws LockTimeoutException si el bloqueo pesimista falla y solo
-     * 		   se revertirá la instrucción
-     * @throws PersistenceException si la ejecución de la consulta supera el
-     * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
+     * @throws NonUniqueResultException if there is more than one result
+     * @throws IllegalStateException if it is called for an UPDATE or DELETE statement from the Java persistence query
+     *         language
+     * @throws QueryTimeoutException if the execution of the query exceeds the value of the query timeout and only the
+     *         instruction is reversed
+     * @throws TransactionRequiredException if a blocking mode other than {@code NONE} has been set and there is no
+     *         transaction or the persistence context has not joined the transaction
+     * @throws PessimisticLockException if the pessimistic blockade fails and the transaction is reversed
+     * @throws LockTimeoutException if the pessimistic blockade fails and only the instruction will be reversed
+     * @throws PersistenceException if the execution of the query exceeds the timeout value of the query and the
+     *         transaction rolls back
      */
     @SuppressWarnings("unchecked")
     public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz,
@@ -155,34 +137,27 @@ public class EntityFactory {
     }
 
     /**
-     * Ejecuta una consulta y mapea el resultado en un DTO.
-     * Retorna un único resultado, en caso que la consulta devuelva más
-     * de un registro o ningún registro se lanzan las excepciones de {@code Query} <br>
-     * Creado el 24/01/2019 a las  11:42:00 a. m. <br>
-     * @param query después de asignarle los parámetros
-     * @param clazz clase a la que se quiere transformar el resultado de la consulta
-     * @param noResultExceptionCallback función que se va a ejecutar en el caso
-     * 		  que query no arroje resultados
-     * @param nonUniqueResultExceptionCallback función que se va a ejectuar en
-     * 		  el caso que el query arroje más de un resultado
-     * @return instancia de la clase
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Execute a query and map the result to a DTO. Return a single result, if the query returns more than one record
+     * or no record, the exceptions of {@code Query} are thrown.
+     * @param <T> entity type
+     * @param query query after assigning parameters
+     * @param clazz class to which you want to transform the result of the query
+     * @param noResultExceptionCallback function that will be executed in the case that query does not get any results
+     * @param nonUniqueResultExceptionCallback function that will be executed in the case that the query gets more than
+     *                                         one result
+     * @return instance
      * @since 2.1.0
      * @throws IllegalArgumentException if query is null
-     * @throws IllegalStateException si se llama para una instrucción UPDATE o
-     * 		   DELETE del lenguaje de consulta de persistencia de Java
-     * @throws QueryTimeoutException si la ejecución de la consulta supera el
-     * 		   valor del tiempo de espera de la consulta y solo se revierte la
-     * 		   instrucción
-     * @throws TransactionRequiredException si se ha establecido un modo de
-     * 		   bloqueo distinto de {@code NONE} y no hay transacción o el
-     * 		   contexto de persistencia no se ha unido a la transacción
-     * @throws PessimisticLockException si el bloqueo pesimista falla y
-     * 		   la transacción se revierte
-     * @throws LockTimeoutException si el bloqueo pesimista falla y solo
-     * 		   se revertirá la instrucción
-     * @throws PersistenceException si la ejecución de la consulta supera el
-     * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
+     * @throws IllegalStateException if it is called for an UPDATE or DELETE statement from the Java persistence query
+     *         language
+     * @throws QueryTimeoutException if the execution of the query exceeds the value of the query timeout and only the
+     *         instruction is reversed
+     * @throws TransactionRequiredException if a blocking mode other than {@code NONE} has been set and there is no
+     *         transaction or the persistence context has not joined the transaction
+     * @throws PessimisticLockException if the pessimistic blockade fails and the transaction is reversed
+     * @throws LockTimeoutException if the pessimistic blockade fails and the transaction is reversed
+     * @throws PersistenceException if the execution of the query exceeds the timeout value of the query and the
+     *         transaction rolls back
      */
     @SuppressWarnings("unchecked")
     public static <T> T reflect(@NotNull("Query can't be null") final Query query, final Class<T> clazz,
@@ -200,27 +175,23 @@ public class EntityFactory {
     }
 
     /**
-     * Ejecuta una consulta y mapea el resultado en un DTO. <br>
-     * Creado el 12/12/2018 a las  3:30:25 p. m. <br>
-     * @param query después de asignarle los parámetros
-     * @param clazz clase a la que se quiere transformar el resultado de la consulta
-     * @return instancia de la clase
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Executes a query and map the result to a DTO.
+     * @param <T> entity type
+     * @param query query after assigning parameters
+     * @param clazz class to which you want to transform the result of the query
+     * @return instance
      * @since 2.0.0
      * @throws IllegalArgumentException if query is null
-     * @throws IllegalStateException si se llama para una instrucción UPDATE o
-     * 		   DELETE del lenguaje de consulta de persistencia de Java
-     * @throws QueryTimeoutException si la ejecución de la consulta supera el
-     * 		   valor del tiempo de espera de la consulta y solo se revierte la instrucción
-     * @throws TransactionRequiredException si se ha establecido un modo de
-     * 		   bloqueo distinto de {@code NONE} y no hay transacción o el
-     * 		   contexto de persistencia no se ha unido a la transacción
-     * @throws PessimisticLockException si el bloqueo pesimista falla y
-     * 		   la transacción se revierte
-     * @throws LockTimeoutException si el bloqueo pesimista falla y solo
-     * 		   se revertirá la instrucción
-     * @throws PersistenceException si la ejecución de la consulta supera el
-     * 		   valor de tiempo de espera de la consulta y la transacción se retrotrae
+     * @throws IllegalStateException if it is called for an UPDATE or DELETE statement from the Java persistence query
+     *         language
+     * @throws QueryTimeoutException if the execution of the query exceeds the value of the query timeout and only the
+     *         instruction is reversed
+     * @throws TransactionRequiredException if a blocking mode other than {@code NONE} has been set and there is no
+     *         transaction or the persistence context has not joined the transaction
+     * @throws PessimisticLockException if the pessimistic blockade fails and the transaction is reversed
+     * @throws LockTimeoutException if the pessimistic blockade fails and the transaction is reversed
+     * @throws PersistenceException if the execution of the query exceeds the timeout value of the query and the
+     *         transaction rolls back
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> reflectList(@NotNull("Query can't be null") final Query query, final Class<T> clazz) {
@@ -232,14 +203,12 @@ public class EntityFactory {
     }
 
     /**
-     * Transforma un mapa retorando por el Query en una instancia de
-     * la clase dada por parámetro <br>
-     * Creado el 12/12/2018 a las  3:53:57 p. m. <br>
-     * @param map mapa con el resultado de la consulta
-     * @param clazz clase a la que se va a mapear
-     * @return instancia con los valores del mapa
+     * Transforms a map returned by the Query in an instance of the class given by parameter.
+     * @param <T> entity type
+     * @param map map with the result of the query
+     * @param clazz class to which you are going to map
+     * @return instance with map values
      * @throws IllegalArgumentException if map or class is null
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
     @Nullable
@@ -249,26 +218,25 @@ public class EntityFactory {
             T instance = clazz.newInstance();
             List<Field> fields = Arrays.asList(clazz.getDeclaredFields());
             map.entrySet().stream()
-                    .filter(field -> obtenerCampo(field.getKey().getName(), fields) != null)
+                    .filter(field -> getField(field.getKey().getName(), fields) != null)
                     .forEach(i -> {
-                        Field field = obtenerCampo(i.getKey().getName(), fields);
+                        Field field = getField(i.getKey().getName(), fields);
                         setValue(field, i.getValue(), instance);
                     });
             return instance;
         } catch (InstantiationException | IllegalAccessException e) {
-            LOGGER.log(Level.SEVERE, "Error creando una instancia de " + clazz.getName(), e);
+            LOGGER.log(Level.SEVERE, "Error creating an instance of " + clazz.getName(), e);
         }
         return null;
     }
 
     /**
-     * Asigna el valor al atributo de la instancia <br>
-     * Creado el 12/12/2018 a las  3:56:49 p. m. <br>
-     * @param field
-     * @param o
-     * @param instance
+     * Assign the value to the instance attribute.
+     * @param <T> entity type
+     * @param field field to which the value is assigned
+     * @param o value to be assigned
+     * @param instance instance of the field
      * @throws IllegalArgumentException if field is null
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
     private static <T> void setValue(@NotNull("Field can't be null") Field field, Object o, T instance) {
@@ -278,37 +246,35 @@ public class EntityFactory {
             field.set(instance, castParam(o, field.getType()));
             field.setAccessible(isAccessible);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            LOGGER.log(Level.WARNING, "Error seteando valor " + o + " en el campo " + field.getName(), e);
+            LOGGER.log(Level.WARNING, "Error setting the value " + o + " in the " + field.getName() + " field.", e);
         }
     }
 
     /**
-     * Busca coincidencias entre el nombre de la columna y el nombre del atributo.
-     * Independiente de si está en {@code camelCase} o en {@code SNAKE_CASE} <br>
-     * Creado el 13/12/2018 a las  9:05:15 a. m. <br>
-     * @param databaseField nombre de la columna
-     * @param fields lista con los campos de la clase
-     * @return el campo de la clase que coincide, de lo contrario {@code null}
+     * Find matches between the name of the column and the name of the attribute. Regardless of whether it is
+     * {@code camelCase} or {@code SNAKE_CASE}.
+     * @param databaseField column name
+     * @param fields list with the fields of the class
+     * @return the field of the class that matches, otherwise {@code null}
      * @throws IllegalArgumentException if field lists is null
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      * @since 2.0.0
      */
-    private static Field obtenerCampo(String databaseField, @NotNull("Field list can't be null") List<Field> fields) {
-        return fields.stream().filter(field -> field.getName().equalsIgnoreCase(calcularNombreCampo(databaseField)))
+    private static Field getField(String databaseField, @NotNull("Field list can't be null") List<Field> fields) {
+        return fields.parallelStream()
+                .filter(field -> field.getName().equalsIgnoreCase(getNameField(databaseField)))
                 .findFirst()
                 .orElse(null);
     }
 
     /**
-     * Valida si el nombre de la columna está en {@code SNAKE_CASE} y la transforma a
-     * {@code camelCase} y valida si tienen el mismo valor <br>
-     * Creado el 13/12/2018 a las  9:07:44 a. m. <br>
-     * @param queryName nombre de la columna de la consulta
-     * @return nombre nombre de la columna transformado
+     * Valid if the name of the column is in {@code SNAKE_CASE} and transforms it to {@code camelCase} and validates if
+     * they have the same value.
+     * @param queryName name of the query column
+     * @return transformed name of the column
      * @throws IllegalArgumentException if queryName is null
      * @since 2.0.0
      */
-    private static String calcularNombreCampo(@NotNull("QueryName is null") final String queryName) {
+    private static String getNameField(@NotNull("QueryName is null") final String queryName) {
         if (queryName.contains("_")) {
             return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, queryName);
         }
@@ -316,78 +282,75 @@ public class EntityFactory {
     }
 
     /**
-     * Contruye el POJO a partir de los datos del objeto de la consulta nativa. <br>
-     * Creado el 1/12/2018 a las  12:17:52 p. m. <br>
-     * @param o objeto retornado por la consulta nativa
-     * @param clazz clase del POJO
-     * @return POJO con la información del objeto
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Build the POJO from the data of the native query object.
+     * @param <T> entity type
+     * @param o object returned by the native query
+     * @param clazz POJO class
+     * @return POJO with the information of the object
+     * @throws ClassCastException if the object can't be instantiated
+     * @throws IllegalArgumentException if there is no constructor for the query attributes
      */
     private static <T> T objectToDTO(Object o, Class<T> clazz) {
         Object[] oA;
         try {
             oA = (Object[]) o;
         } catch (ClassCastException e) {
-            return notAList(o, clazz);
+            return castSimpleObject(o, clazz);
         }
         int length = oA.length;
-        // Obtiene el constructor adecuado para construir el POJO
+        // Get the right constructor to build the POJO
         Constructor<T> c = getConstructor(clazz, length);
         if (c != null) {
             try {
-                // Crea una instancia del POJO con el constructor encontrado
+                // Create an instance of the POJO with the constructor found
                 return c.newInstance(castParams(oA, c.getParameterTypes()));
             } catch (Exception e) {
-                // Si ocurre algún error durante la inicialización
-                LOGGER.log(Level.SEVERE, "Ocurrió un error instanciando el objeto.", e);
+                // If an error occurs during initialization
+                LOGGER.log(Level.SEVERE, "An error occurred instantiating the object.", e);
                 throw new ClassCastException(e.getMessage());
             }
         } else {
-            throw new IllegalArgumentException("No se encontró un constructor para la cantidad de elementos.");
+            throw new IllegalArgumentException("No constructor was found for the number of elements.");
         }
     }
 
     /**
-     * Si es un objeto simple lo moldea y lo retorna <br>
-     * Creado el 12/12/2018 a las  3:58:06 p. m. <br>
-     * @param o
-     * @param clazz
-     * @return
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Cast a simple object.
+     * @param <T> entity type
+     * @param o value returned by query
+     * @param clazz class to be casted
+     * @return casted value
      */
     @SuppressWarnings("unchecked")
-    private static <T> T notAList(Object o, Class<T> clazz) {
+    private static <T> T castSimpleObject(Object o, Class<T> clazz) {
         return (T) castParam(o, clazz);
     }
 
     /**
-     * Obitnene el primer constructor con el número de parámetros igual al número
-     * de atributos del objeto de la consulta<br>
-     * Creado el 1/12/2018 a las  12:11:35 p. m. <br>
-     * @param clazz clase del POJO
-     * @param parameterCount número de atributos del objeto de la consulta nativa
+     * Gets the first constructor with the number of parameters equal to the number of attributes of the object of the
+     * query.
+     * @param <T> entity type
+     * @param clazz POJO class
+     * @param parameterCount number of attributes of the native query object
      * @return the constructor
      * @throws IllegalArgumentException if class is null
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      */
     @SuppressWarnings("unchecked")
     private static <T> Constructor<T> getConstructor(@NotNull("Class can't be null") Class<T> clazz,
                                                      int parameterCount) {
         Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
-        return Arrays.asList(constructors).stream()
+        return Arrays.stream(constructors)
                 .filter(i -> i.getParameterCount() == parameterCount)
                 .findFirst()
                 .orElse(null);
     }
 
     /**
-     * Moldea cada uno de los valores a su respetiva clase dentro del POJO <br>
-     * Creado el 1/12/2018 a las  12:20:40 p. m. <br>
-     * @param p arreglo con los atributos del objeto de la consulta nativa
-     * @param classes arreglo con las clases respectivas para cada atributo
-     * @return arreglo de objetos con los atributos moldeados
+     * Cast each of the values to their respective class within the POJO.
+     * @param p array with the attributes of the native query object
+     * @param classes array with the respective classes for each attribute
+     * @return array of objects with casted attributes
      * @throws IllegalArgumentException if attributes array is null
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
      */
     private static Object[] castParams(@NotNull("Attributes array can't be null") Object[] p, Class<?>[] classes) {
         Object[] castedParams = new Object[p.length];
@@ -398,44 +361,40 @@ public class EntityFactory {
     }
 
     /**
-     * Moldea un objeto a la clase dada <br>
-     * Creado el 13/12/2018 a las  9:10:05 a. m. <br>
-     * @param o objeto
-     * @param c clase a moldear
-     * @return instancia de la clase con el valor del objeto
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Cast numbers to the class sent by parameter.
+     * @param o number object
+     * @param clazz class to be casted
+     * @return casted number
      * @since 2.0.0
      */
     @Nullable
-    private static Object castParam(Object o, Class<?> c) {
+    private static Object castParam(Object o, Class<?> clazz) {
         try {
             if (o == null) {
                 return null;
-            } else if (c == Number.class || c.getSuperclass() == Number.class) {
-                // Casos especiales para moldear los números
-                return castNumber(o, c);
-            } else if (c == Date.class && o.getClass() == Timestamp.class) {
+            } else if (clazz == Number.class || clazz.getSuperclass() == Number.class) {
+                // Special cases to cast the numbers
+                return castNumber(o, clazz);
+            } else if (clazz == Date.class && o.getClass() == Timestamp.class) {
                 Timestamp timestamp = (Timestamp) o;
                 return new Date(timestamp.getTime());
-            } else if (c == String.class && !(o instanceof String)) {
+            } else if (clazz == String.class && !(o instanceof String)) {
                 return o.toString();
             } else {
-                return c.cast(o);
+                return clazz.cast(o);
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Ocurrió un error moldeando el objeto con valor "
-                    + o + " a la clase " + c.getName(), e);
+            LOGGER.log(Level.SEVERE, "An error occurred by casting the object with value " + o + " to class "
+                    + clazz.getName(), e);
             throw e;
         }
     }
 
     /**
-     * Moldea los números a la clase enviada por parámetro <br>
-     * Creado el 1/12/2018 a las  12:23:54 p. m. <br>
-     * @param o objeto con el número
-     * @param clazz clase a la que debe ser moldeada
-     * @return número moldeado
-     * @author <a href="https://mateolegi.github.io">Mateo Leal</a>
+     * Cast numbers to the class sent by parameter.
+     * @param o number object
+     * @param clazz class to be casted
+     * @return casted number
      */
     private static Number castNumber(Object o, Class<?> clazz) {
         return numberCast.get(clazz).cast(o);

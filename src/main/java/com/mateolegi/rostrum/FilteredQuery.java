@@ -27,21 +27,22 @@ public class FilteredQuery {
      * In the case that one of the parameters is not recognized, it will be omitted. <br>
      * The structure of the map is as follows:
      * <ul>
-     *   <li> key: name of the attribute as it is in the entity. </li>
-     *   <li> value: object with the value to be compared. </li>
+     *     <li> key: name of the attribute as it is in the entity. </li>
+     *     <li> value: object with the value to be compared. </li>
      * </ul>
-     * @param <E> class of the consulted entity
-     * @param clazz class of the consulted entity
-     * @param queryParams parameter to make the filter
-     * @return query with applied filters
+     * @param <T> class of the consulted entity
+     * @param clazz class of the consulted entity
+     * @param entityManager entity manager
+     * @param queryParams parameter to make the filter
+     * @return query with applied filters
      * @throws IllegalArgumentException if EntityManager is null
      */
-    public static <E> TypedQuery<E> createFilteredQuery(Class<E> clazz,
+    public static <T> TypedQuery<T> createFilteredQuery(Class<T> clazz,
                                                     @NotNull("EntityManager can't be null") EntityManager entityManager,
                                                         Map<String, Object> queryParams) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<E> query = builder.createQuery(clazz);
-        Root<E> from = query.from(clazz);
+        CriteriaQuery<T> query = builder.createQuery(clazz);
+        Root<T> from = query.from(clazz);
         query.select(from).where(filter(from, builder, queryParams));
         return entityManager.createQuery(query);
     }
@@ -59,15 +60,16 @@ public class FilteredQuery {
     }*/
 
     /**
-     * Applies the filters sent to the query. <br>
-     * @param from entity reference
-     * @param builder object used to build the query
-     * @param queryParams parameters for the filter
-     * @return fix with filters
+     * Applies the filters sent to the query.
+     * @param <T> entity type
+     * @param from entity reference
+     * @param builder object used to build the query
+     * @param queryParams parameters for the filter
+     * @return fix with filters
      * @throws IllegalArgumentException if queryParams is null
      */
     @NotNull
-    private static <E> Predicate[] filter(Root<E> from, CriteriaBuilder builder,
+    private static <T> Predicate[] filter(Root<T> from, CriteriaBuilder builder,
                                           @NotNull("Query params can't be null") Map<String, Object> queryParams) {
         return queryParams.entrySet().parallelStream()
                 .map(entry -> {
