@@ -1,0 +1,23 @@
+{
+  "data-sources": [
+    {
+      "persistence-unit": "rostrum",
+      "db-connection": "mariadb",
+      "host": "localhost",
+      "port": "3306",
+      "database": "social-network",
+      "user": "root",
+      "password": "1216"
+    }
+  ],
+  "entity-package": [
+    "com.mateolegi.rostrum.entities"
+  ],
+  "bcrypt": {
+    "iterations": "10"
+  },
+  "aes256": {
+    "secret-key": "cipher-key",
+    "salt": "cipher-salt"
+  }
+}

@@ -1,6 +1,7 @@
 package com.mateolegi.rostrum;
 
 import com.mateolegi.rostrum.constant.PropertiesConstants;
+import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
@@ -23,5 +24,12 @@ class PropertiesTest {
 
     private Supplier<String> message(String key) {
         return () -> "No value found for the key " + key;
+    }
+
+    @Test
+    void getJSONFile() {
+        JSONObject jsonObject = Properties.getJSONFile();
+        assertNotNull(jsonObject);
+
     }
 }
