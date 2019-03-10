@@ -127,6 +127,3 @@ public class Factory {
         return url;
     }
 }
-
-
-
