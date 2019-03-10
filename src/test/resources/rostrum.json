@@ -2,16 +2,16 @@
   "data-sources": [
     {
       "persistence-unit": "rostrum",
-      "db-connection": "mariadb",
+      "db-connection": "postgres",
       "host": "localhost",
-      "port": "3306",
-      "database": "social-network",
-      "user": "root",
-      "password": "1216"
+      "port": "5432",
+      "database": "social_network",
+      "user": "database",
+      "password": "1216",
+      "entity-package": [
+        "com.mateolegi.rostrum.entities"
+      ]
     }
-  ],
-  "entity-package": [
-    "com.mateolegi.rostrum.entities"
   ],
   "bcrypt": {
     "iterations": "10"
