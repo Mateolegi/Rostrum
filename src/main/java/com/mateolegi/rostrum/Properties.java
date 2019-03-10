@@ -1,6 +1,5 @@
 package com.mateolegi.rostrum;
 
-import static com.mateolegi.rostrum.constant.ConfigurationFileConstants.*;
 import com.mateolegi.rostrum.exception.PropertyNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,12 +8,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import static com.mateolegi.rostrum.constant.ConfigurationFileConstants.*;
 
 /**
  * Represents access to the Rostrum properties file.
@@ -71,15 +74,15 @@ class Properties {
     }
 
     public static JSONObject getDataSource(String persistenceUnitName) {
-        JSONArray datasources = Properties.getDataSources();
-        if (datasources.isEmpty()) {
+        JSONArray dataSources = Properties.getDataSources();
+        if (dataSources.isEmpty()) {
             throw new PropertyNotFoundException("No data sources found in the configuration file.");
         }
         if (Objects.isNull(persistenceUnitName)) {
-            return (JSONObject) datasources.get(0);
+            return (JSONObject) dataSources.get(0);
         }
         try {
-            return (JSONObject) datasources.stream()
+            return (JSONObject) dataSources.stream()
                     .filter(item -> ((JSONObject) item).get(PERSISTENCE_UNIT).equals(persistenceUnitName))
                     .findFirst()
                     .orElseThrow(() -> new PropertyNotFoundException(String
