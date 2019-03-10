@@ -18,20 +18,21 @@ import java.util.Objects;
  */
 public class Factory {
 
-    private static final EntityManagerFactory FACTORY;
+//    private static final EntityManagerFactory FACTORY;
+
     private static EntityManager manager = null;
 
     static {
         String url = getProperty(PropertiesConstants.JPA_JDBC_URL);
         String persistenceUnit = getProperty(PropertiesConstants.JPA_PERSISTENCE_UNIT);
         Map<String, String> properties = getDatabaseProperties();
-//        if (Objects.isNull(url)) {
-//            FACTORY = Persistence.createEntityManagerFactory(persistenceUnit);
-//        } else {
+        if (Objects.isNull(url)) {
+            FACTORY = Persistence.createEntityManagerFactory(persistenceUnit);
+        } else {
             FACTORY = new PersistenceProvider()
                     .createContainerEntityManagerFactory(new RostrumPersistenceUnitInfo("rostrum"), getDatabaseProperties());
-//                    .createEntityManagerFactory(persistenceUnit, getDatabaseProperties());
-//        }
+                    .createEntityManagerFactory(persistenceUnit, getDatabaseProperties());
+        }
         System.out.println("pasa");
         if (FACTORY.getProperties().isEmpty()) System.out.println("no hay propiedades");
         FACTORY.getProperties().forEach((key, val) -> System.out.println("key: " + key + ", value: " + val));

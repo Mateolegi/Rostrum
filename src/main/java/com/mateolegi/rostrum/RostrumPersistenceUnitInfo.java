@@ -1,6 +1,7 @@
 package com.mateolegi.rostrum;
 
 import com.mateolegi.rostrum.constant.PropertiesConstants;
+import org.eclipse.persistence.jpa.PersistenceProvider;
 import org.json.simple.JSONObject;
 import org.reflections.Reflections;
 
@@ -124,7 +125,7 @@ public class RostrumPersistenceUnitInfo implements PersistenceUnitInfo {
      */
     @Override
     public URL getPersistenceUnitRootUrl() {
-        return null;
+        return getClass().getProtectionDomain().getCodeSource().getLocation();
     }
 
     /**
@@ -135,7 +136,8 @@ public class RostrumPersistenceUnitInfo implements PersistenceUnitInfo {
      */
     @Override
     public List<String> getManagedClassNames() {
-        return new Reflections(PropertiesConstants.JPA_ENTITY_PACKAGE)
+        String packages = (String) datasource.get(PropertiesConstants.JPA_ENTITY_PACKAGE);
+        return new Reflections(packages)
                 .getSubTypesOf(Object.class)
                 .parallelStream()
                 .map(Class::getName)
