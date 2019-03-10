@@ -32,7 +32,7 @@ class RostrumTest {
         u.setLastName("Prueba");
         u.setActive(1);
         User uSaved = Rostrum.save(u);
-        System.out.println(uSaved.getId());
+        assertTrue(Rostrum.exists(uSaved));
     }
 
     @Test
