@@ -432,7 +432,7 @@ public class Rostrum {
      * @return entity manager
      */
     private static EntityManager getManager() {
-        return Factory.getEntityManager();
+        return Factory.getEntityManager("rostrum");
     }
 
     /** Start a transaction if it is not active yet. */
