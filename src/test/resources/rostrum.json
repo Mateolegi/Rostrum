@@ -14,7 +14,7 @@
     }
   ],
   "bcrypt": {
-    "iterations": "10"
+    "iterations": 10
   },
   "aes256": {
     "secret-key": "cipher-key",

@@ -1,10 +1,10 @@
 package com.mateolegi.rostrum;
 
-import com.mateolegi.rostrum.constant.PropertiesConstants;
 import com.mateolegi.rostrum.exception.DecryptionException;
 import com.mateolegi.rostrum.exception.EncryptionException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -20,6 +20,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
+import static com.mateolegi.rostrum.constant.ConfigurationFileConstants.*;
+
 /**
  * Implements AES256 cipher method to secure texts.
  * @author <a href="mateolegi.github.io">Mateo Leal</a>
@@ -27,8 +29,14 @@ import java.util.Base64;
  */
 public class AES256 {
 
-    private static String privateKey = Properties.getString(PropertiesConstants.AES256_SECRET_KEY);
-    private static String salt = Properties.getString(PropertiesConstants.AES256_SALT);
+    private static final String privateKey;
+    private static final String salt;
+
+    static {
+        JSONObject jsonObject = (JSONObject) Properties.getJSONFile().get(AES256);
+        privateKey = (String) jsonObject.get(SECRET_KEY);
+        salt = (String) jsonObject.get(SALT);
+    }
 
     /**
      * Encrypt the text with the AES256 encryption method.
