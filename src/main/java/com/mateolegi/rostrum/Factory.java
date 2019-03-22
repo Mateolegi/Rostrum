@@ -2,8 +2,10 @@ package com.mateolegi.rostrum;
 
 import com.mateolegi.rostrum.constant.ConfigurationFileConstants;
 import com.mateolegi.rostrum.constant.DatabaseProvider;
+import com.mateolegi.rostrum.exception.PropertyNotFoundException;
 import org.eclipse.persistence.config.TargetServer;
 import org.eclipse.persistence.jpa.PersistenceProvider;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.persistence.EntityManager;
@@ -11,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
 
@@ -27,15 +30,65 @@ public class Factory {
      * Generates EntityManager to interact with the persistence context.
      * @return generated EntityManager
      */
-    public static synchronized EntityManager getEntityManager(String persistenceUnit) {
+    public static EntityManager getEntityManager() {
+        return getEntityManagerFactory(getDefaultPersistenceUnit()).createEntityManager();
+    }
+
+    /**
+     * Generates EntityManager to interact with the persistence context.
+     * @return generated EntityManager
+     */
+    public static EntityManager getEntityManager(String persistenceUnit) {
         return getEntityManagerFactory(persistenceUnit).createEntityManager();
     }
 
-    public static EntityManagerFactory getEntityManagerFactory(String persistenceUnit) {
+    public static synchronized EntityManagerFactory getEntityManagerFactory(String persistenceUnit) {
         if (!FACTORIES.containsKey(persistenceUnit)) {
             createEntityManagerFactory(persistenceUnit);
         }
         return FACTORIES.get(persistenceUnit);
+    }
+
+    public static void beginTransaction() {
+        beginTransaction(getDefaultPersistenceUnit());
+    }
+
+    public static void beginTransaction(String persistenceUnit) {
+        EntityManager manager = getEntityManager(persistenceUnit);
+        if (Objects.nonNull(manager)) {
+            manager.getTransaction().begin();
+        }
+    }
+
+    public static void commitTransaction() {
+        commitTransaction(getDefaultPersistenceUnit());
+    }
+
+    public static void commitTransaction(String persistenceUnit) {
+        EntityManager manager = getEntityManager(persistenceUnit);
+        if (Objects.nonNull(manager) && manager.getTransaction().isActive()) {
+            manager.getTransaction().commit();
+        }
+    }
+
+    public static void rollbackTransaction() {
+        rollbackTransaction(getDefaultPersistenceUnit());
+    }
+
+    public static void rollbackTransaction(String persistenceUnit) {
+        EntityManager manager = getEntityManager(persistenceUnit);
+        if (Objects.nonNull(manager) && manager.getTransaction().isActive()) {
+            manager.getTransaction().rollback();
+        }
+    }
+
+    private static String getDefaultPersistenceUnit() {
+        JSONArray dataSources = Properties.getDataSources();
+        if (dataSources.isEmpty()) {
+            throw new PropertyNotFoundException("There is no persistence unit defined in rostrum.json.");
+        }
+        JSONObject dataSource = (JSONObject) dataSources.get(0);
+        return (String) dataSource.get(ConfigurationFileConstants.PERSISTENCE_UNIT);
     }
 
     private static void createEntityManagerFactory(String persistenceUnit) {

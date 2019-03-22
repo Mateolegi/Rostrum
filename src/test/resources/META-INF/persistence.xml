@@ -4,6 +4,9 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
              version="2.2">
     <persistence-unit name="rostrum">
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>com.mateolegi.rostrum.entities.Comment</class>
+        <class>com.mateolegi.rostrum.entities.Like</class>
+        <class>com.mateolegi.rostrum.entities.Post</class>
+        <class>com.mateolegi.rostrum.entities.User</class>
     </persistence-unit>
 </persistence>
