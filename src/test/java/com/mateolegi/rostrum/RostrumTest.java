@@ -1,6 +1,7 @@
 package com.mateolegi.rostrum;
 
 import com.mateolegi.rostrum.entities.User;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -24,6 +25,7 @@ class RostrumTest {
     }
 
     @Test
+    @Order(1)
     void save() {
         User u = new User();
         u.setUsername("Test");
@@ -32,7 +34,9 @@ class RostrumTest {
         u.setLastName("Prueba");
         u.setActive(1);
         User uSaved = Rostrum.save(u);
-        System.out.println(uSaved.getId());
+        assertNotNull(uSaved);
+        assertTrue(BCrypt.verifyHash("password", uSaved.getPassword()));
+        assertTrue(Rostrum.exists(uSaved));
     }
 
     @Test

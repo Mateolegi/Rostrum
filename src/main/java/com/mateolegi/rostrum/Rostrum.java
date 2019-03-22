@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
  */
 public class Rostrum {
 
-    private static boolean isTransactionPreviouslyActive = false;
-
     /**
      * Gets all records of the entity in the persistence context.
      * @param <T> entity type
@@ -68,17 +66,17 @@ public class Rostrum {
         try {
             // if the entity does not exist, it is stored in persistence context, otherwise it is updated.
             if (!exists(entity)) {
-                beginTransaction();
+                Factory.beginTransaction();
                 setCreatedAt(entity);
                 compareEncryptedFields(entity, null);
                 getManager().persist(entity);
-                commitTransaction();
+                Factory.commitTransaction();
                 return entity;
             } else {
                 return update(entity);
             }
         } catch (RuntimeException e) {
-            rollbackTransaction();
+            Factory.rollbackTransaction();
             throw e;
         }
     }
@@ -95,17 +93,17 @@ public class Rostrum {
         requireEntityManager();
         try {
             if (exists(entity)) {
-                beginTransaction();
+                Factory.beginTransaction();
                 setUpdatedAt(entity);
                 compareEncryptedFields(entity, find(entity.getClass(), getId(entity)));
                 T updatedEntity = getManager().merge(entity);
-                commitTransaction();
+                Factory.commitTransaction();
                 return updatedEntity;
             } else {
                 return save(entity);
             }
         } catch (RuntimeException e) {
-            rollbackTransaction();
+            Factory.rollbackTransaction();
             throw e;
         }
     }
@@ -131,11 +129,11 @@ public class Rostrum {
     public static <T> void delete(T entity) {
         requireEntity(entity);
         try {
-            beginTransaction();
+            Factory.beginTransaction();
             getManager().remove(entity);
-            commitTransaction();
+            Factory.commitTransaction();
         } catch (RuntimeException e) {
-            rollbackTransaction();
+            Factory.rollbackTransaction();
             throw e;
         }
     }
@@ -433,38 +431,6 @@ public class Rostrum {
      */
     private static EntityManager getManager() {
         return Factory.getEntityManager();
-    }
-
-    /** Start a transaction if it is not active yet. */
-    private static void beginTransaction() {
-        if (!isTransactionPreviouslyActive()) {
-            getManager().getTransaction().begin();
-        }
-    }
-
-    /** Commit current transaction. */
-    private static void commitTransaction() {
-        if (!isTransactionPreviouslyActive) {
-            getManager().getTransaction().commit();
-        }
-    }
-
-    /** Roll back current transaction. */
-    private static void rollbackTransaction() {
-        if (!isTransactionPreviouslyActive) {
-            getManager().getTransaction().rollback();
-        }
-    }
-
-    /**
-     * Validates if a transaction was previously active before calling action.
-     * @return result
-     */
-    private static boolean isTransactionPreviouslyActive() {
-        if (getManager().getTransaction().isActive()) {
-            isTransactionPreviouslyActive = true;
-        }
-        return isTransactionPreviouslyActive;
     }
 
     /**

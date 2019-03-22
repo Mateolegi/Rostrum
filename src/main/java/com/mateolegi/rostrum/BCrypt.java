@@ -1,7 +1,9 @@
 package com.mateolegi.rostrum;
 
-import com.mateolegi.rostrum.constant.PropertiesConstants;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
+
+import static com.mateolegi.rostrum.constant.ConfigurationFileConstants.*;
 
 /**
  * BCrypt implements OpenBSD-style Blowfish password hashing using
@@ -12,7 +14,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BCrypt {
 
-    private static final int logRounds = Properties.getInt(PropertiesConstants.BCRYPT_ITERATIONS);
+    private static final int logRounds;
+
+    static {
+        JSONObject jsonObject = (JSONObject) Properties.getJSONFile().get(BCRYPT);
+        logRounds = Math.toIntExact((Long) jsonObject.get(ITERATIONS));
+    }
 
     /**
      * Hash a string using the OpenBSD bcrypt scheme

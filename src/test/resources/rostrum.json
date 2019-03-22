@@ -1,0 +1,23 @@
+{
+  "data-sources": [
+    {
+      "persistence-unit": "rostrum",
+      "db-connection": "postgres",
+      "host": "localhost",
+      "port": "5432",
+      "database": "social_network",
+      "user": "database",
+      "password": "1216",
+      "entity-package": [
+        "com.mateolegi.rostrum.entities"
+      ]
+    }
+  ],
+  "bcrypt": {
+    "iterations": 10
+  },
+  "aes256": {
+    "secret-key": "cipher-key",
+    "salt": "cipher-salt"
+  }
+}
