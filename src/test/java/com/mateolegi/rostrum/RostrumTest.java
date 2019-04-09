@@ -12,16 +12,18 @@ class RostrumTest {
 
     @Test
     void findAll() {
-        List<User> userList = Rostrum.findAll(User.class);
-        assertNotNull(userList);
+        User user = new User();
+        List<User> users = (List<User>) user.findAll();
+        System.out.println(users.size());
+        users.forEach(System.out::println);
+        assertNotNull(users);
     }
 
     @Test
     void find() {
-        User u = Rostrum.find(User.class, 2L);
-        System.out.println(u.getPassword());
-        System.out.println(BCrypt.verifyHash("password", u.getPassword()));
-        assertNotNull(u);
+        User user = (User) new User().find(1L);
+        assertNotNull(user);
+        assertEquals(1L, user.getId());
     }
 
     @Test
@@ -33,7 +35,7 @@ class RostrumTest {
         u.setName("Prueba");
         u.setLastName("Prueba");
         u.setActive(1);
-        User uSaved = Rostrum.save(u);
+        User uSaved = (User) u.save();
         assertNotNull(uSaved);
         assertTrue(BCrypt.verifyHash("password", uSaved.getPassword()));
         assertTrue(Rostrum.exists(uSaved));
@@ -58,9 +60,11 @@ class RostrumTest {
 
     @Test
     void exists() {
-        assertTrue(Rostrum.exists(Rostrum.find(User.class, 1L)));
+        User user = (User) new User().find(1L);
+        assertNotNull(user);
+        assertTrue(user::exists);
         User notExistingUser = new User();
         notExistingUser.setId(Long.MAX_VALUE);
-        assertFalse(Rostrum.exists(notExistingUser));
+        assertFalse(notExistingUser::exists);
     }
 }

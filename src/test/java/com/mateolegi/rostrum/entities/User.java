@@ -1,5 +1,6 @@
 package com.mateolegi.rostrum.entities;
 
+import com.mateolegi.rostrum.Rostrum2;
 import com.mateolegi.rostrum.annotation.Crypt;
 import com.mateolegi.rostrum.annotation.Type;
 import org.jetbrains.annotations.Contract;
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends Rostrum2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -146,5 +147,19 @@ public class User {
 
     public void setPostsById(Collection<Post> postsById) {
         this.postsById = postsById;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
